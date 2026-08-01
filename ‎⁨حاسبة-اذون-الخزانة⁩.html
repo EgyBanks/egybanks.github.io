@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>حاسبة أذون الخزانة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#122421;
+    --deep:#0F3D3E;
+    --deep-2:#0B2C2D;
+    --gold:#C9A227;
+    --gold-soft:#E4C866;
+    --paper:#F6F2E7;
+    --paper-2:#EFE8D6;
+    --line:#D9CFAE;
+    --coral:#B5482F;
+    --good:#1F6E4A;
+    --muted:#6C7A73;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(1100px 600px at 85% -10%, rgba(201,162,39,.14), transparent 60%),
+      radial-gradient(900px 500px at -10% 110%, rgba(15,61,62,.10), transparent 60%),
+      var(--paper);
+    color:var(--ink);
+    font-family:'Cairo', sans-serif;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:32px 16px 60px;
+  }
+  .wrap{width:100%;max-width:640px;}
+
+  header{text-align:center;margin-bottom:26px;}
+  .crest{
+    width:54px;height:54px;margin:0 auto 14px;
+    border:2px solid var(--gold);
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--gold);
+    font-family:'Aref Ruqaa', serif;
+    font-size:26px;
+    background:var(--deep);
+  }
+  h1{
+    font-family:'Aref Ruqaa', serif;
+    font-weight:700;
+    font-size:32px;
+    margin:0 0 6px;
+    color:var(--deep);
+    letter-spacing:.5px;
+  }
+  header p{
+    margin:0;
+    color:var(--muted);
+    font-size:14px;
+    font-weight:500;
+  }
+
+  .card{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:18px;
+    box-shadow:0 18px 40px -22px rgba(15,61,62,.35);
+    overflow:hidden;
+  }
+
+  .tabs{
+    display:flex;
+    background:var(--deep);
+  }
+  .tab{
+    flex:1;
+    text-align:center;
+    padding:15px 10px;
+    font-weight:700;
+    font-size:15px;
+    color:rgba(255,255,255,.55);
+    cursor:pointer;
+    border-bottom:3px solid transparent;
+    transition:.2s;
+    user-select:none;
+  }
+  .tab.active{
+    color:#fff;
+    border-bottom-color:var(--gold);
+    background:var(--deep-2);
+  }
+
+  .body-pad{padding:26px 24px 6px;}
+
+  .field{margin-bottom:18px;}
+  .field label{
+    display:block;
+    font-size:13.5px;
+    font-weight:700;
+    color:var(--deep);
+    margin-bottom:7px;
+  }
+  .field .hint{font-weight:500;color:var(--muted);font-size:12px;margin-right:4px;}
+  input[type=number]{
+    width:100%;
+    padding:12px 14px;
+    border:1.5px solid var(--line);
+    border-radius:10px;
+    font-family:'Cairo', sans-serif;
+    font-size:16px;
+    font-weight:600;
+    color:var(--ink);
+    background:var(--paper);
+    outline:none;
+    transition:.15s;
+  }
+  input[type=number]:focus{
+    border-color:var(--gold);
+    background:#fff;
+    box-shadow:0 0 0 3px rgba(201,162,39,.18);
+  }
+
+  .terms{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:8px;
+  }
+  .term-btn{
+    padding:10px 4px;
+    text-align:center;
+    border:1.5px solid var(--line);
+    border-radius:10px;
+    background:var(--paper);
+    font-weight:700;
+    font-size:14px;
+    cursor:pointer;
+    transition:.15s;
+    color:var(--deep);
+  }
+  .term-btn.active{
+    background:var(--deep);
+    border-color:var(--deep);
+    color:#fff;
+  }
+  .term-btn span{display:block;font-size:10.5px;font-weight:500;color:var(--muted);margin-top:2px;}
+  .term-btn.active span{color:rgba(255,255,255,.7);}
+
+  .calc-btn{
+    width:100%;
+    padding:15px;
+    margin:8px 0 26px;
+    background:linear-gradient(180deg, var(--gold-soft), var(--gold));
+    color:var(--deep-2);
+    border:none;
+    border-radius:12px;
+    font-family:'Cairo', sans-serif;
+    font-weight:800;
+    font-size:16px;
+    cursor:pointer;
+    letter-spacing:.3px;
+    box-shadow:0 10px 22px -10px rgba(201,162,39,.6);
+    transition:transform .12s;
+  }
+  .calc-btn:active{transform:scale(.98);}
+
+  .receipt{
+    margin:0 24px 26px;
+    background:var(--deep);
+    border-radius:14px;
+    padding:22px 20px 20px;
+    position:relative;
+    color:#fff;
+  }
+  .receipt::before, .receipt::after{
+    content:"";
+    position:absolute;
+    left:16px; right:16px;
+    height:1px;
+    background-image:linear-gradient(90deg, transparent, rgba(255,255,255,.35) 4px, transparent 8px);
+    background-size:12px 1px;
+    background-repeat:repeat-x;
+  }
+  .receipt::before{ bottom:78px; }
+  .receipt-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    padding:8px 0;
+    font-size:14px;
+  }
+  .receipt-row .rlabel{color:rgba(255,255,255,.65);font-weight:500;}
+  .receipt-row .rval{font-weight:800;font-size:16px;font-variant-numeric:tabular-nums;}
+  .receipt-row.tax .rval{color:#F0B7A6;}
+  .receipt-row.net .rval{color:var(--gold-soft);}
+
+  .seal{
+    margin-top:88px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+  }
+  .seal-ring{
+    width:78px;height:78px;
+    border-radius:50%;
+    border:2px dashed var(--gold-soft);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+  }
+  .seal-ring b{font-size:20px;color:var(--gold-soft);font-weight:800;}
+  .seal-ring span{font-size:9px;color:rgba(255,255,255,.6);margin-top:2px;}
+  .seal-text{font-size:12.5px;color:rgba(255,255,255,.7);line-height:1.7;}
+  .seal-text b{color:#fff;}
+
+  .final{
+    text-align:center;
+    padding:16px 24px 4px;
+  }
+  .final .flabel{font-size:12.5px;color:var(--muted);font-weight:600;}
+  .final .fval{
+    font-family:'Aref Ruqaa', serif;
+    font-size:34px;
+    color:var(--deep);
+    font-weight:700;
+    margin:2px 0 18px;
+  }
+
+  .note{
+    font-size:11.5px;
+    color:var(--muted);
+    text-align:center;
+    padding:0 26px 22px;
+    line-height:1.8;
+  }
+
+  footer{
+    margin-top:26px;
+    text-align:center;
+    font-size:12px;
+    color:var(--muted);
+  }
+  footer b{color:var(--deep);}
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="crest">أ</div>
+    <h1>حاسبة أذون الخزانة</h1>
+    <p>احسب صافي ربحك من أذون الخزانة المصرية بدقة</p>
+  </header>
+
+  <div class="card">
+    <div class="tabs">
+      <div class="tab active" data-market="primary">السوق الأولي</div>
+      <div class="tab" data-market="secondary">السوق الثانوي</div>
+    </div>
+
+    <div class="body-pad">
+
+      <div class="field">
+        <label id="amountLabel">المبلغ المستثمر (القيمة الاسمية)</label>
+        <input type="number" id="amount" placeholder="مثال: 100000" inputmode="decimal">
+      </div>
+
+      <div class="field">
+        <label>مدة الإذن (بالأيام)</label>
+        <div class="terms" id="terms">
+          <div class="term-btn active" data-days="91">91<span>3 أشهر</span></div>
+          <div class="term-btn" data-days="182">182<span>6 أشهر</span></div>
+          <div class="term-btn" data-days="273">273<span>9 أشهر</span></div>
+          <div class="term-btn" data-days="364">364<span>سنة</span></div>
+        </div>
+      </div>
+
+      <div class="field" id="remainingField" style="display:none;">
+        <label>عدد الأيام المتبقية حتى الاستحقاق</label>
+        <span class="hint">لغرض احتساب سعر الشراء في السوق الثانوي</span>
+        <input type="number" id="remainingDays" placeholder="مثال: 45" inputmode="decimal">
+      </div>
+
+      <div class="field">
+        <label>نسبة العائد المعلنة سنويًا (%)</label>
+        <input type="number" id="yieldRate" placeholder="مثال: 27.5" step="0.01" inputmode="decimal">
+      </div>
+
+      <button class="calc-btn" id="calcBtn">احسب الآن</button>
+    </div>
+
+    <div class="receipt">
+      <div class="receipt-row"><span class="rlabel">سعر الشراء</span><span class="rval" id="rPurchase">0</span></div>
+      <div class="receipt-row"><span class="rlabel">إجمالي العائد (قبل الضريبة)</span><span class="rval" id="rGross">0</span></div>
+      <div class="receipt-row tax"><span class="rlabel">الضريبة (20%)</span><span class="rval" id="rTax">0</span></div>
+      <div class="receipt-row net"><span class="rlabel">الربح الصافي</span><span class="rval" id="rNet">0</span></div>
+
+      <div class="seal">
+        <div class="seal-ring"><b id="rAnnual">0%</b><span>عائد سنوي فعلي</span></div>
+        <div class="seal-text">صافي بعد خصم<br>ضريبة الأرباح<br><b>20%</b></div>
+      </div>
+    </div>
+
+    <div class="final">
+      <div class="flabel">المبلغ المسترد نهاية المدة</div>
+      <div class="fval" id="rTotal">0 جنيه</div>
+    </div>
+
+    <div class="note">
+      الحساب تقديري ولأغراض التوضيح فقط، ويعتمد على السعر الاسمي وسعر العائد المعلن من البنك، وقد تختلف النتيجة الفعلية باختلاف شروط كل بنك وتاريخ الشراء الفعلي.
+    </div>
+  </div>
+
+  <footer>🛡️ حاسبة أذون الخزانة — Developed with <b>Claude</b></footer>
+</div>
+
+<script>
+  const state = { market:'primary', days:91 };
+
+  document.querySelectorAll('.tab').forEach(t=>{
+    t.addEventListener('click', ()=>{
+      document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+      t.classList.add('active');
+      state.market = t.dataset.market;
+      const remField = document.getElementById('remainingField');
+      const amountLabel = document.getElementById('amountLabel');
+      if(state.market === 'secondary'){
+        remField.style.display = 'block';
+        amountLabel.textContent = 'القيمة الاسمية للإذن';
+      } else {
+        remField.style.display = 'none';
+        amountLabel.textContent = 'المبلغ المستثمر (القيمة الاسمية)';
+      }
+    });
+  });
+
+  document.querySelectorAll('.term-btn').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      document.querySelectorAll('.term-btn').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      state.days = parseInt(b.dataset.days, 10);
+    });
+  });
+
+  function fmt(n){
+    if(!isFinite(n)) return '0';
+    return n.toLocaleString('ar-EG', {maximumFractionDigits:2, minimumFractionDigits:2});
+  }
+
+  document.getElementById('calcBtn').addEventListener('click', ()=>{
+    const amount = parseFloat(document.getElementById('amount').value) || 0;
+    const yieldRate = parseFloat(document.getElementById('yieldRate').value) || 0;
+    let days = state.days;
+
+    if(state.market === 'secondary'){
+      const rem = parseFloat(document.getElementById('remainingDays').value) || 0;
+      if(rem > 0) days = rem;
+    }
+
+    if(amount <= 0 || yieldRate <= 0 || days <= 0){
+      document.getElementById('rPurchase').textContent = '0';
+      document.getElementById('rGross').textContent = '0';
+      document.getElementById('rTax').textContent = '0';
+      document.getElementById('rNet').textContent = '0';
+      document.getElementById('rTotal').textContent = '0 جنيه';
+      document.getElementById('rAnnual').textContent = '0%';
+      return;
+    }
+
+    const purchase = amount / (1 + (yieldRate/100) * (days/360));
+    const gross = amount - purchase;
+    const tax = gross * 0.20;
+    const net = gross - tax;
+    const total = purchase + net;
+    const annualNet = (net / purchase) * (365/days) * 100;
+
+    document.getElementById('rPurchase').textContent = fmt(purchase);
+    document.getElementById('rGross').textContent = fmt(gross);
+    document.getElementById('rTax').textContent = fmt(tax);
+    document.getElementById('rNet').textContent = fmt(net);
+    document.getElementById('rTotal').textContent = fmt(total) + ' جنيه';
+    document.getElementById('rAnnual').textContent = annualNet.toFixed(2) + '%';
+  });
+</script>
+</body>
+</html>
